@@ -95,28 +95,45 @@ export default function CameraCapture({ handleCameraSubmit, facingMode = "enviro
         <CardTitle>Camera</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <AspectRatio ratio={3 / 4}>
-          <video
-            ref={videoRef}
-            playsInline
-            muted
-            className="h-full w-full rounded-md object-cover bg-black"
-          />
-        </AspectRatio>
+        {preview ? (
+          <>
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-full max-w-xs rounded-md border"
+            />
+
+          </>
+        ) : (
+          <AspectRatio ratio={3 / 4}>
+            <video
+              ref={videoRef}
+              playsInline
+              muted
+              className="h-full w-full rounded-md object-cover bg-black"
+            />
+          </AspectRatio>
+        )}
         {error && (
           <p className="text-sm text-red-600" aria-live="polite">{error}</p>
         )}
-        {preview && (
-          <img
-            src={preview}
-            alt="Preview"
-            className="w-full max-w-xs rounded-md border"
-          />
-        )}
+
       </CardContent>
       <CardFooter className="flex gap-2">
-        <Button onClick={handleCapture}>Take photo</Button>
-        <Button variant="secondary" onClick={switchCamera}>Switch camera</Button>
+        {preview ?
+          <>
+            <Button onClick={() => {
+              setPreview(null)
+              startStream(activeFacingMode)
+            }}>Retake photo</Button>
+            <Button onClick={() => console.log("submit photo")}>Submit photo</Button>
+          </>
+          :
+          <>
+            <Button onClick={handleCapture}>Take photo</Button>
+            <Button variant="secondary" onClick={switchCamera}>Switch camera</Button>
+          </>
+        }
       </CardFooter>
     </Card>
   );
