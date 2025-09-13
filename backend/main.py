@@ -2,14 +2,13 @@ from fastapi import FastAPI, File, HTTPException, UploadFile, Depends
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-from services.AnalysisService import (
+from services.AnalysisService.index import (
     AnalysisService,
     UnsupportedMediaTypeError,
     FileTooLargeError,
     ImageProcessingError,
 )
 from functools import lru_cache
-
 
 load_dotenv()
 app = FastAPI()

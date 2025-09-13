@@ -5,13 +5,13 @@ from PIL import Image
 from datetime import datetime
 from pydantic import BaseModel
 
-
+## types
 class ParkingAnalysis(BaseModel):
     can_park: bool
     rules: list[str]
     simple_explanation: str
 
-
+## errors
 class AnalysisError(Exception):
     pass
 
@@ -24,6 +24,7 @@ class FileTooLargeError(AnalysisError):
 class ImageProcessingError(AnalysisError):
     pass
 
+## service
 class AnalysisService:
     def __init__(self, gemini_api_key: str):
         self.gemini_api_key = gemini_api_key
