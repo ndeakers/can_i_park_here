@@ -3,14 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { H1 } from "@/components/ui/h1";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
-  handleCameraSubmit?: (file: File, dataUrl: string) => void; // handles the captured photo
+  handleCameraSubmit: () => void; // handles the captured photo
+  setPhoto: (file: File) => void;
   facingMode?: "user" | "environment";
 };
 
-export default function CameraCapture({ handleCameraSubmit, facingMode = "environment" }: Props) {
+export default function CameraCapture({ handleCameraSubmit, setPhoto, facingMode = "environment" }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,8 +80,8 @@ export default function CameraCapture({ handleCameraSubmit, facingMode = "enviro
     const quality = 0.92;
     const dataUrl = canvas.toDataURL("image/jpeg", quality);
     setPreview(dataUrl);
-    handleCameraSubmit?.(file, dataUrl);
-  }, [handleCameraSubmit]);
+    setPhoto(file);
+  }, [setPhoto]);
 
   // starts stream on mount or when user switches camera
   useEffect(() => {
@@ -90,17 +92,15 @@ export default function CameraCapture({ handleCameraSubmit, facingMode = "enviro
 
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Camera</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
+    <div className="flex flex-col items-center justify-center">
+      <H1 className="mb-4">Camera</H1>
+      <div className="w-full max-w-[640px] max-h-[75vh]">
         {preview ? (
           <>
             <img
               src={preview}
               alt="Preview"
-              className="w-full max-w-xs rounded-md border"
+              className="h-full w-full rounded-md object-cover bg-black"
             />
 
           </>
@@ -118,23 +118,23 @@ export default function CameraCapture({ handleCameraSubmit, facingMode = "enviro
           <p className="text-sm text-red-600" aria-live="polite">{error}</p>
         )}
 
-      </CardContent>
-      <CardFooter className="flex gap-2">
-        {preview ?
-          <>
-            <Button onClick={() => {
-              setPreview(null)
-              startStream(activeFacingMode)
-            }}>Retake photo</Button>
-            <Button onClick={() => console.log("submit photo")}>Submit photo</Button>
-          </>
-          :
-          <>
-            <Button onClick={handleCapture}>Take photo</Button>
-            <Button variant="secondary" onClick={switchCamera}>Switch camera</Button>
-          </>
-        }
-      </CardFooter>
-    </Card>
+        <div className="flex gap-2 justify-center mt-4">
+          {preview ?
+            <>
+              <Button onClick={() => {
+                setPreview(null)
+                startStream(activeFacingMode)
+              }}>Retake photo</Button>
+              <Button onClick={handleCameraSubmit}>Submit photo</Button>
+            </>
+            :
+            <>
+              <Button onClick={handleCapture}>Take photo</Button>
+              <Button variant="secondary" onClick={switchCamera}>Switch camera</Button>
+            </>
+          }
+        </div>
+      </div>
+    </div>
   );
 }

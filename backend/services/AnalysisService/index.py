@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 ## types
 class ParkingAnalysis(BaseModel):
+    is_parking_sign: bool
     can_park: bool
     rules: list[str]
     simple_explanation: str
@@ -41,6 +42,7 @@ class AnalysisService:
         Notes: In general, when the sign has exceptions, that means the individual sign is exempt from the rules it states.
         Example: 2 hour parking, except Saturday and Sunday, That means the sign is exempt from the 2 hour parking rule on Saturday and Sunday and parking is free.
         
+        - Is this a parking sign?
         - Can I park here?
         - What are the parking rules? List the rules that the sign has.
         - Simple Explanation to the user
